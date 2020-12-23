@@ -1,0 +1,802 @@
+
+VideoGame.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000376  00000000  00000000  000000b4  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .rodata       0000000d  00004376  00000376  0000042a  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  2 .data         00000006  00800040  00000383  00000437  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  3 .bss          0000000b  00800046  00800046  0000043d  2**0
+                  ALLOC
+  4 .comment      00000030  00000000  00000000  0000043d  2**0
+                  CONTENTS, READONLY
+  5 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000470  2**2
+                  CONTENTS, READONLY
+  6 .debug_aranges 00000050  00000000  00000000  000004ac  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_info   000006ea  00000000  00000000  000004fc  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_abbrev 0000043a  00000000  00000000  00000be6  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_line   00000532  00000000  00000000  00001020  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_frame  000000a0  00000000  00000000  00001554  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_str    00000354  00000000  00000000  000015f4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_loc    00000261  00000000  00000000  00001948  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 13 .debug_ranges 00000040  00000000  00000000  00001ba9  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0a c0       	rjmp	.+20     	; 0x16 <__ctors_end>
+   2:	24 c0       	rjmp	.+72     	; 0x4c <__bad_interrupt>
+   4:	23 c0       	rjmp	.+70     	; 0x4c <__bad_interrupt>
+   6:	22 c0       	rjmp	.+68     	; 0x4c <__bad_interrupt>
+   8:	21 c0       	rjmp	.+66     	; 0x4c <__bad_interrupt>
+   a:	20 c0       	rjmp	.+64     	; 0x4c <__bad_interrupt>
+   c:	1f c0       	rjmp	.+62     	; 0x4c <__bad_interrupt>
+   e:	1e c0       	rjmp	.+60     	; 0x4c <__bad_interrupt>
+  10:	1d c0       	rjmp	.+58     	; 0x4c <__bad_interrupt>
+  12:	1c c0       	rjmp	.+56     	; 0x4c <__bad_interrupt>
+  14:	1b c0       	rjmp	.+54     	; 0x4c <__bad_interrupt>
+
+00000016 <__ctors_end>:
+  16:	11 27       	eor	r17, r17
+  18:	1f bf       	out	0x3f, r17	; 63
+  1a:	cf e5       	ldi	r28, 0x5F	; 95
+  1c:	d0 e0       	ldi	r29, 0x00	; 0
+  1e:	de bf       	out	0x3e, r29	; 62
+  20:	cd bf       	out	0x3d, r28	; 61
+
+00000022 <__do_copy_data>:
+  22:	20 e0       	ldi	r18, 0x00	; 0
+  24:	a0 e4       	ldi	r26, 0x40	; 64
+  26:	b0 e0       	ldi	r27, 0x00	; 0
+  28:	e3 e8       	ldi	r30, 0x83	; 131
+  2a:	f3 e4       	ldi	r31, 0x43	; 67
+  2c:	02 c0       	rjmp	.+4      	; 0x32 <__do_copy_data+0x10>
+  2e:	31 91       	ld	r19, Z+
+  30:	3d 93       	st	X+, r19
+  32:	a6 34       	cpi	r26, 0x46	; 70
+  34:	b2 07       	cpc	r27, r18
+  36:	d9 f7       	brne	.-10     	; 0x2e <__do_copy_data+0xc>
+
+00000038 <__do_clear_bss>:
+  38:	20 e0       	ldi	r18, 0x00	; 0
+  3a:	a6 e4       	ldi	r26, 0x46	; 70
+  3c:	b0 e0       	ldi	r27, 0x00	; 0
+  3e:	01 c0       	rjmp	.+2      	; 0x42 <.do_clear_bss_start>
+
+00000040 <.do_clear_bss_loop>:
+  40:	1d 93       	st	X+, r17
+
+00000042 <.do_clear_bss_start>:
+  42:	a1 35       	cpi	r26, 0x51	; 81
+  44:	b2 07       	cpc	r27, r18
+  46:	e1 f7       	brne	.-8      	; 0x40 <.do_clear_bss_loop>
+  48:	63 d1       	rcall	.+710    	; 0x310 <main>
+  4a:	93 c1       	rjmp	.+806    	; 0x372 <_exit>
+
+0000004c <__bad_interrupt>:
+  4c:	d9 cf       	rjmp	.-78     	; 0x0 <__vectors>
+
+0000004e <boardStart>:
+*/
+
+void boardStart() {
+	
+	for (int x = 0 ; x < 6 ; x++) {
+		bugs[x] = 0b00011111;
+  4e:	4f e1       	ldi	r20, 0x1F	; 31
+  50:	4b a9       	sts	0x4b, r20	; 0x80004b <bugs>
+  52:	4c a9       	sts	0x4c, r20	; 0x80004c <bugs+0x1>
+  54:	4d a9       	sts	0x4d, r20	; 0x80004d <bugs+0x2>
+  56:	4e a9       	sts	0x4e, r20	; 0x80004e <bugs+0x3>
+  58:	4f a9       	sts	0x4f, r20	; 0x80004f <bugs+0x4>
+  5a:	40 ab       	sts	0x50, r20	; 0x800050 <bugs+0x5>
+	}
+	
+	ICR0L = 255;	
+  5c:	4f ef       	ldi	r20, 0xFF	; 255
+  5e:	42 bd       	out	0x22, r20	; 34
+  60:	08 95       	ret
+
+00000062 <xPos>:
+}
+
+void xPos(uint8_t theSpacing) {
+
+	do {
+		__asm__ __volatile__ ("nop");	
+  62:	00 00       	nop
+	} while(--theSpacing);
+  64:	81 50       	subi	r24, 0x01	; 1
+  66:	e9 f7       	brne	.-6      	; 0x62 <xPos>
+
+}
+  68:	08 95       	ret
+
+0000006a <drawSprite>:
+
+void drawSprite(uint8_t theData) {
+
+	__asm__ __volatile__ ("OUT 0x01, R24");
+  6a:	81 b9       	out	0x01, r24	; 1
+	__asm__ __volatile__ ("ROR R24");
+  6c:	87 95       	ror	r24
+	__asm__ __volatile__ ("OUT 0x01, R24");
+  6e:	81 b9       	out	0x01, r24	; 1
+	__asm__ __volatile__ ("ROR R24");
+  70:	87 95       	ror	r24
+	__asm__ __volatile__ ("OUT 0x01, R24");
+  72:	81 b9       	out	0x01, r24	; 1
+	__asm__ __volatile__ ("ROR R24");
+  74:	87 95       	ror	r24
+	__asm__ __volatile__ ("OUT 0x01, R24");
+  76:	81 b9       	out	0x01, r24	; 1
+	__asm__ __volatile__ ("nop");	
+  78:	00 00       	nop
+	__asm__ __volatile__ ("OUT 0x01, R24");	//Draw 4th pixel again
+  7a:	81 b9       	out	0x01, r24	; 1
+	
+	__asm__ __volatile__ ("ROL R24");		//Mirror universe the pixels
+  7c:	88 1f       	adc	r24, r24
+	__asm__ __volatile__ ("OUT 0x01, R24");
+  7e:	81 b9       	out	0x01, r24	; 1
+	__asm__ __volatile__ ("ROL R24");
+  80:	88 1f       	adc	r24, r24
+	__asm__ __volatile__ ("OUT 0x01, R24");
+  82:	81 b9       	out	0x01, r24	; 1
+	__asm__ __volatile__ ("ROL R24");
+  84:	88 1f       	adc	r24, r24
+	__asm__ __volatile__ ("OUT 0x01, R24");
+  86:	81 b9       	out	0x01, r24	; 1
+	
+	__asm__ __volatile__ ("LSL R24");		//End by outputting black
+  88:	88 0f       	add	r24, r24
+	__asm__ __volatile__ ("OUT 0x01, R24");
+  8a:	81 b9       	out	0x01, r24	; 1
+  8c:	08 95       	ret
+
+0000008e <drawPF>:
+
+}
+
+void drawPF() {
+  8e:	2f 93       	push	r18
+  90:	3f 93       	push	r19
+  92:	cf 93       	push	r28
+  94:	df 93       	push	r29
+  96:	00 d0       	rcall	.+0      	; 0x98 <drawPF+0xa>
+  98:	1f 93       	push	r17
+  9a:	cd b7       	in	r28, 0x3d	; 61
+  9c:	de b7       	in	r29, 0x3e	; 62
+
+	switch(VLMCSR) {
+  9e:	44 b7       	in	r20, 0x34	; 52
+  a0:	43 30       	cpi	r20, 0x03	; 3
+  a2:	09 f4       	brne	.+2      	; 0xa6 <drawPF+0x18>
+  a4:	46 c0       	rjmp	.+140    	; 0x132 <__DATA_REGION_LENGTH__+0x32>
+  a6:	18 f4       	brcc	.+6      	; 0xae <drawPF+0x20>
+  a8:	42 30       	cpi	r20, 0x02	; 2
+  aa:	41 f0       	breq	.+16     	; 0xbc <drawPF+0x2e>
+  ac:	8d c0       	rjmp	.+282    	; 0x1c8 <__DATA_REGION_LENGTH__+0xc8>
+  ae:	45 30       	cpi	r20, 0x05	; 5
+  b0:	09 f4       	brne	.+2      	; 0xb4 <drawPF+0x26>
+  b2:	76 c0       	rjmp	.+236    	; 0x1a0 <__DATA_REGION_LENGTH__+0xa0>
+  b4:	46 30       	cpi	r20, 0x06	; 6
+  b6:	09 f4       	brne	.+2      	; 0xba <drawPF+0x2c>
+  b8:	85 c0       	rjmp	.+266    	; 0x1c4 <__DATA_REGION_LENGTH__+0xc4>
+  ba:	86 c0       	rjmp	.+268    	; 0x1c8 <__DATA_REGION_LENGTH__+0xc8>
+			
+		case 2:						//Draw the bugs?
+			if (PCMSK < 8) {								//Active vertical sprite line?
+  bc:	40 b3       	in	r20, 0x10	; 16
+  be:	48 30       	cpi	r20, 0x08	; 8
+  c0:	08 f0       	brcs	.+2      	; 0xc4 <drawPF+0x36>
+  c2:	82 c0       	rjmp	.+260    	; 0x1c8 <__DATA_REGION_LENGTH__+0xc8>
+
+				uint8_t spriteLine = bugGraphx[PCMSK];		//Puts data in R24
+  c4:	e0 b3       	in	r30, 0x10	; 16
+  c6:	f0 e0       	ldi	r31, 0x00	; 0
+  c8:	e5 58       	subi	r30, 0x85	; 133
+  ca:	fc 4b       	sbci	r31, 0xBC	; 188
+  cc:	40 81       	ld	r20, Z
+  ce:	cf 5f       	subi	r28, 0xFF	; 255
+  d0:	df 4f       	sbci	r29, 0xFF	; 255
+  d2:	48 83       	st	Y, r20
+  d4:	c1 50       	subi	r28, 0x01	; 1
+  d6:	d0 40       	sbci	r29, 0x00	; 0
+
+				if (SMCR & 0x08) {
+  d8:	0a b7       	in	r16, 0x3a	; 58
+  da:	03 ff       	sbrs	r16, 3
+  dc:	08 c0       	rjmp	.+16     	; 0xee <drawPF+0x60>
+					spriteLine >>= 4;
+  de:	42 95       	swap	r20
+  e0:	4f 70       	andi	r20, 0x0F	; 15
+  e2:	cf 5f       	subi	r28, 0xFF	; 255
+  e4:	df 4f       	sbci	r29, 0xFF	; 255
+  e6:	48 83       	st	Y, r20
+  e8:	c1 50       	subi	r28, 0x01	; 1
+  ea:	d0 40       	sbci	r29, 0x00	; 0
+  ec:	03 c0       	rjmp	.+6      	; 0xf4 <drawPF+0x66>
+				}
+				else {
+					__asm__ __volatile__ ("nop");			//Only need 3 NOPS since a true above eats a jump
+  ee:	00 00       	nop
+					__asm__ __volatile__ ("nop");
+  f0:	00 00       	nop
+					__asm__ __volatile__ ("nop");
+  f2:	00 00       	nop
+				}
+				
+				xPos(bugH);
+  f4:	84 a1       	lds	r24, 0x44	; 0x800044 <bugH>
+  f6:	b5 df       	rcall	.-150    	; 0x62 <xPos>
+  f8:	2b e4       	ldi	r18, 0x4B	; 75
+  fa:	30 e0       	ldi	r19, 0x00	; 0
+				
+				uint8_t bugsAcross = 0;
+				
+				do {
+					if (bugs[bugsAcross]) {
+  fc:	e2 2f       	mov	r30, r18
+  fe:	f3 2f       	mov	r31, r19
+ 100:	41 91       	ld	r20, Z+
+ 102:	2e 2f       	mov	r18, r30
+ 104:	3f 2f       	mov	r19, r31
+ 106:	44 23       	and	r20, r20
+ 108:	61 f0       	breq	.+24     	; 0x122 <__DATA_REGION_LENGTH__+0x22>
+						if (bugs[bugsAcross] & bugMask) {
+ 10a:	58 a1       	lds	r21, 0x48	; 0x800048 <bugMask>
+ 10c:	45 23       	and	r20, r21
+ 10e:	39 f0       	breq	.+14     	; 0x11e <__DATA_REGION_LENGTH__+0x1e>
+							drawSprite(spriteLine);
+ 110:	cf 5f       	subi	r28, 0xFF	; 255
+ 112:	df 4f       	sbci	r29, 0xFF	; 255
+ 114:	88 81       	ld	r24, Y
+ 116:	c1 50       	subi	r28, 0x01	; 1
+ 118:	d0 40       	sbci	r29, 0x00	; 0
+ 11a:	a7 df       	rcall	.-178    	; 0x6a <drawSprite>
+ 11c:	02 c0       	rjmp	.+4      	; 0x122 <__DATA_REGION_LENGTH__+0x22>
+						}
+						else {
+							drawSprite(0);							//NOP here?
+ 11e:	80 e0       	ldi	r24, 0x00	; 0
+ 120:	a4 df       	rcall	.-184    	; 0x6a <drawSprite>
+						}
+					}
+
+				} while(++bugsAcross < 6);
+ 122:	f0 e0       	ldi	r31, 0x00	; 0
+ 124:	21 35       	cpi	r18, 0x51	; 81
+ 126:	3f 07       	cpc	r19, r31
+ 128:	49 f7       	brne	.-46     	; 0xfc <drawPF+0x6e>
+				
+				PCMSK++;
+ 12a:	40 b3       	in	r20, 0x10	; 16
+ 12c:	4f 5f       	subi	r20, 0xFF	; 255
+ 12e:	40 bb       	out	0x10, r20	; 16
+ 130:	4b c0       	rjmp	.+150    	; 0x1c8 <__DATA_REGION_LENGTH__+0xc8>
+			}
+		break;
+			
+		case 3:;						//Draw the barriers?
+
+			int barrierTemp = barrier;
+ 132:	40 a1       	lds	r20, 0x40	; 0x800040 <__data_start>
+ 134:	51 a1       	lds	r21, 0x41	; 0x800041 <__data_start+0x1>
+ 136:	cd 5f       	subi	r28, 0xFD	; 253
+ 138:	df 4f       	sbci	r29, 0xFF	; 255
+ 13a:	58 83       	st	Y, r21
+ 13c:	4a 93       	st	-Y, r20
+ 13e:	c2 50       	subi	r28, 0x02	; 2
+ 140:	d0 40       	sbci	r29, 0x00	; 0
+			xPos(8);
+ 142:	88 e0       	ldi	r24, 0x08	; 8
+ 144:	8e df       	rcall	.-228    	; 0x62 <xPos>
+ 146:	24 e0       	ldi	r18, 0x04	; 4
+ 148:	30 e0       	ldi	r19, 0x00	; 0
+
+			for (int x = 0 ; x < 4 ; x++) {
+				xPos(6);
+ 14a:	86 e0       	ldi	r24, 0x06	; 6
+ 14c:	8a df       	rcall	.-236    	; 0x62 <xPos>
+				
+				int damage = 94 - lineCounter;
+				
+				if ((barrierTemp & 0x03) >= damage) {
+ 14e:	69 a1       	lds	r22, 0x49	; 0x800049 <lineCounter>
+ 150:	4e e5       	ldi	r20, 0x5E	; 94
+ 152:	50 e0       	ldi	r21, 0x00	; 0
+ 154:	46 1b       	sub	r20, r22
+ 156:	51 0b       	sbc	r21, r17
+ 158:	ce 5f       	subi	r28, 0xFE	; 254
+ 15a:	df 4f       	sbci	r29, 0xFF	; 255
+ 15c:	69 91       	ld	r22, Y+
+ 15e:	78 81       	ld	r23, Y
+ 160:	c3 50       	subi	r28, 0x03	; 3
+ 162:	d0 40       	sbci	r29, 0x00	; 0
+ 164:	63 70       	andi	r22, 0x03	; 3
+ 166:	77 27       	eor	r23, r23
+ 168:	64 17       	cp	r22, r20
+ 16a:	75 07       	cpc	r23, r21
+ 16c:	14 f0       	brlt	.+4      	; 0x172 <__DATA_REGION_LENGTH__+0x72>
+					DDRB = 1;
+ 16e:	41 e0       	ldi	r20, 0x01	; 1
+ 170:	41 b9       	out	0x01, r20	; 1
+				}
+
+				barrierTemp >>= 2;
+ 172:	ce 5f       	subi	r28, 0xFE	; 254
+ 174:	df 4f       	sbci	r29, 0xFF	; 255
+ 176:	e9 91       	ld	r30, Y+
+ 178:	f8 81       	ld	r31, Y
+ 17a:	c3 50       	subi	r28, 0x03	; 3
+ 17c:	d0 40       	sbci	r29, 0x00	; 0
+ 17e:	f5 95       	asr	r31
+ 180:	e7 95       	ror	r30
+ 182:	f5 95       	asr	r31
+ 184:	e7 95       	ror	r30
+ 186:	cd 5f       	subi	r28, 0xFD	; 253
+ 188:	df 4f       	sbci	r29, 0xFF	; 255
+ 18a:	f8 83       	st	Y, r31
+ 18c:	ea 93       	st	-Y, r30
+ 18e:	c2 50       	subi	r28, 0x02	; 2
+ 190:	d0 40       	sbci	r29, 0x00	; 0
+				
+				xPos(4);
+ 192:	84 e0       	ldi	r24, 0x04	; 4
+ 194:	66 df       	rcall	.-308    	; 0x62 <xPos>
+				
+				DDRB = 0;
+ 196:	11 b9       	out	0x01, r17	; 1
+ 198:	21 50       	subi	r18, 0x01	; 1
+ 19a:	31 0b       	sbc	r19, r17
+		case 3:;						//Draw the barriers?
+
+			int barrierTemp = barrier;
+			xPos(8);
+
+			for (int x = 0 ; x < 4 ; x++) {
+ 19c:	b1 f6       	brne	.-84     	; 0x14a <__DATA_REGION_LENGTH__+0x4a>
+ 19e:	14 c0       	rjmp	.+40     	; 0x1c8 <__DATA_REGION_LENGTH__+0xc8>
+			}
+			
+		break;
+			
+		case 5:						//Draw the player
+			xPos(playerX);
+ 1a0:	87 a1       	lds	r24, 0x47	; 0x800047 <playerX>
+ 1a2:	5f df       	rcall	.-322    	; 0x62 <xPos>
+			uint8_t spriteLine = playerGraphx[lineCounter - 110];		//Puts data in R24
+ 1a4:	e9 a1       	lds	r30, 0x49	; 0x800049 <lineCounter>
+ 1a6:	f0 e0       	ldi	r31, 0x00	; 0
+ 1a8:	e8 5f       	subi	r30, 0xF8	; 248
+ 1aa:	fc 4b       	sbci	r31, 0xBC	; 188
+ 1ac:	80 81       	ld	r24, Z
+			
+			if (SMCR & 0x04) {					//Is player un-exploded?
+ 1ae:	0a b7       	in	r16, 0x3a	; 58
+ 1b0:	02 ff       	sbrs	r16, 2
+ 1b2:	03 c0       	rjmp	.+6      	; 0x1ba <__DATA_REGION_LENGTH__+0xba>
+				spriteLine >>= 4;
+ 1b4:	82 95       	swap	r24
+ 1b6:	8f 70       	andi	r24, 0x0F	; 15
+ 1b8:	03 c0       	rjmp	.+6      	; 0x1c0 <__DATA_REGION_LENGTH__+0xc0>
+			}
+			else {
+				__asm__ __volatile__ ("nop");			//Only need 3 NOPS since a true above eats a jump
+ 1ba:	00 00       	nop
+				__asm__ __volatile__ ("nop");
+ 1bc:	00 00       	nop
+				__asm__ __volatile__ ("nop");
+ 1be:	00 00       	nop
+			}
+			
+			drawSprite(spriteLine);
+ 1c0:	54 df       	rcall	.-344    	; 0x6a <drawSprite>
+		break;
+ 1c2:	02 c0       	rjmp	.+4      	; 0x1c8 <__DATA_REGION_LENGTH__+0xc8>
+			
+		case 6:				//Ground
+			DDRB = 1;
+ 1c4:	41 e0       	ldi	r20, 0x01	; 1
+ 1c6:	41 b9       	out	0x01, r20	; 1
+		break;
+		
+	}
+
+}
+ 1c8:	0f 91       	pop	r16
+ 1ca:	0f 91       	pop	r16
+ 1cc:	0f 91       	pop	r16
+ 1ce:	df 91       	pop	r29
+ 1d0:	cf 91       	pop	r28
+ 1d2:	3f 91       	pop	r19
+ 1d4:	2f 91       	pop	r18
+ 1d6:	08 95       	ret
+
+000001d8 <drawMissiles>:
+
+void drawMissiles() {
+
+	if (heroMPixels < 8) {							
+ 1d8:	43 a1       	lds	r20, 0x43	; 0x800043 <heroMPixels>
+ 1da:	48 30       	cpi	r20, 0x08	; 8
+ 1dc:	48 f4       	brcc	.+18     	; 0x1f0 <drawMissiles+0x18>
+					
+		xPos(ICR0H);
+ 1de:	83 b5       	in	r24, 0x23	; 35
+ 1e0:	40 df       	rcall	.-384    	; 0x62 <xPos>
+							
+		DDRB = 1;
+ 1e2:	41 e0       	ldi	r20, 0x01	; 1
+ 1e4:	41 b9       	out	0x01, r20	; 1
+		__asm__ __volatile__ ("nop");
+ 1e6:	00 00       	nop
+		DDRB = 0;
+ 1e8:	11 b9       	out	0x01, r17	; 1
+
+		heroMPixels++;
+ 1ea:	43 a1       	lds	r20, 0x43	; 0x800043 <heroMPixels>
+ 1ec:	4f 5f       	subi	r20, 0xFF	; 255
+ 1ee:	43 a9       	sts	0x43, r20	; 0x800043 <heroMPixels>
+ 1f0:	08 95       	ret
+
+000001f2 <lineLogic>:
+
+}
+
+void lineLogic() {
+	
+	if (++EICRA & 0x01) {
+ 1f2:	45 b3       	in	r20, 0x15	; 21
+ 1f4:	4f 5f       	subi	r20, 0xFF	; 255
+ 1f6:	45 bb       	out	0x15, r20	; 21
+ 1f8:	40 ff       	sbrs	r20, 0
+ 1fa:	89 c0       	rjmp	.+274    	; 0x30e <lineLogic+0x11c>
+
+		if (lineCounter == bugNext) {				//Time to draw a line of bugs?
+ 1fc:	59 a1       	lds	r21, 0x49	; 0x800049 <lineCounter>
+ 1fe:	4a a1       	lds	r20, 0x4a	; 0x80004a <bugNext>
+ 200:	54 13       	cpse	r21, r20
+ 202:	0c c0       	rjmp	.+24     	; 0x21c <lineLogic+0x2a>
+			PCMSK = 0;								//Trigger the sprite draw
+ 204:	10 bb       	out	0x10, r17	; 16
+			bugMask >>= 1;							//Shift to next row of bugs
+ 206:	48 a1       	lds	r20, 0x48	; 0x800048 <bugMask>
+ 208:	46 95       	lsr	r20
+ 20a:	48 a9       	sts	0x48, r20	; 0x800048 <bugMask>
+			if (--DIDR0) {							//If we didn't draw them all, set up next line
+ 20c:	47 b3       	in	r20, 0x17	; 23
+ 20e:	41 50       	subi	r20, 0x01	; 1
+ 210:	47 bb       	out	0x17, r20	; 23
+ 212:	44 23       	and	r20, r20
+ 214:	19 f0       	breq	.+6      	; 0x21c <lineLogic+0x2a>
+				bugNext += 10;
+ 216:	4a a1       	lds	r20, 0x4a	; 0x80004a <bugNext>
+ 218:	46 5f       	subi	r20, 0xF6	; 246
+ 21a:	4a a9       	sts	0x4a, r20	; 0x80004a <bugNext>
+			}
+		}
+		
+		if (lineCounter == ICR0L) {
+ 21c:	52 b5       	in	r21, 0x22	; 34
+ 21e:	49 a1       	lds	r20, 0x49	; 0x800049 <lineCounter>
+ 220:	54 13       	cpse	r21, r20
+ 222:	01 c0       	rjmp	.+2      	; 0x226 <lineLogic+0x34>
+			heroMPixels = 0;
+ 224:	13 a9       	sts	0x43, r17	; 0x800043 <heroMPixels>
+		}
+
+		switch(++lineCounter) {					//Draw the screen and do logic line-by-line
+ 226:	4f 5f       	subi	r20, 0xFF	; 255
+ 228:	49 a9       	sts	0x49, r20	; 0x800049 <lineCounter>
+ 22a:	43 36       	cpi	r20, 0x63	; 99
+ 22c:	a1 f1       	breq	.+104    	; 0x296 <lineLogic+0xa4>
+ 22e:	58 f4       	brcc	.+22     	; 0x246 <lineLogic+0x54>
+ 230:	4a 30       	cpi	r20, 0x0A	; 10
+ 232:	09 f1       	breq	.+66     	; 0x276 <lineLogic+0x84>
+ 234:	18 f4       	brcc	.+6      	; 0x23c <lineLogic+0x4a>
+ 236:	41 30       	cpi	r20, 0x01	; 1
+ 238:	b1 f0       	breq	.+44     	; 0x266 <lineLogic+0x74>
+ 23a:	08 95       	ret
+ 23c:	45 31       	cpi	r20, 0x15	; 21
+ 23e:	29 f1       	breq	.+74     	; 0x28a <lineLogic+0x98>
+ 240:	4f 35       	cpi	r20, 0x5F	; 95
+ 242:	31 f1       	breq	.+76     	; 0x290 <lineLogic+0x9e>
+ 244:	08 95       	ret
+ 246:	4d 37       	cpi	r20, 0x7D	; 125
+ 248:	09 f4       	brne	.+2      	; 0x24c <lineLogic+0x5a>
+ 24a:	43 c0       	rjmp	.+134    	; 0x2d2 <lineLogic+0xe0>
+ 24c:	28 f4       	brcc	.+10     	; 0x258 <lineLogic+0x66>
+ 24e:	4e 36       	cpi	r20, 0x6E	; 110
+ 250:	29 f1       	breq	.+74     	; 0x29c <lineLogic+0xaa>
+ 252:	43 37       	cpi	r20, 0x73	; 115
+ 254:	81 f1       	breq	.+96     	; 0x2b6 <lineLogic+0xc4>
+ 256:	08 95       	ret
+ 258:	40 38       	cpi	r20, 0x80	; 128
+ 25a:	09 f4       	brne	.+2      	; 0x25e <lineLogic+0x6c>
+ 25c:	49 c0       	rjmp	.+146    	; 0x2f0 <lineLogic+0xfe>
+ 25e:	43 38       	cpi	r20, 0x83	; 131
+ 260:	09 f4       	brne	.+2      	; 0x264 <lineLogic+0x72>
+ 262:	4c c0       	rjmp	.+152    	; 0x2fc <lineLogic+0x10a>
+ 264:	08 95       	ret
+			
+			case 1:
+				ADCSRA |= (1 << ADSC);			//Start ADC conversion
+ 266:	ee 9a       	sbi	0x1d, 6	; 29
+				bugMask = 0b01000000;			//Setup mask for analyzing which bugs are left
+ 268:	40 e4       	ldi	r20, 0x40	; 64
+ 26a:	48 a9       	sts	0x48, r20	; 0x800048 <bugMask>
+				DIDR0 = 6;						//We want 5 lines of aliens
+ 26c:	46 e0       	ldi	r20, 0x06	; 6
+ 26e:	47 bb       	out	0x17, r20	; 23
+				bugNext = bugV;					//What line to start drawing them on				
+ 270:	45 a1       	lds	r20, 0x45	; 0x800045 <bugV>
+ 272:	4a a9       	sts	0x4a, r20	; 0x80004a <bugNext>
+			break;
+ 274:	08 95       	ret
+			
+			case 10:
+				playerX = ADCL >> 1;			
+ 276:	49 b3       	in	r20, 0x19	; 25
+				playerX += 6;
+ 278:	46 95       	lsr	r20
+ 27a:	4a 5f       	subi	r20, 0xFA	; 250
+			
+				if (playerX > 85) {
+ 27c:	46 35       	cpi	r20, 0x56	; 86
+ 27e:	10 f4       	brcc	.+4      	; 0x284 <lineLogic+0x92>
+				bugNext = bugV;					//What line to start drawing them on				
+			break;
+			
+			case 10:
+				playerX = ADCL >> 1;			
+				playerX += 6;
+ 280:	47 a9       	sts	0x47, r20	; 0x800047 <playerX>
+ 282:	08 95       	ret
+			
+				if (playerX > 85) {
+					playerX = 85;
+ 284:	45 e5       	ldi	r20, 0x55	; 85
+ 286:	47 a9       	sts	0x47, r20	; 0x800047 <playerX>
+ 288:	08 95       	ret
+				}			
+			break;
+			
+			case 21:				//Enemies
+				VLMCSR = 2;			
+ 28a:	42 e0       	ldi	r20, 0x02	; 2
+ 28c:	44 bf       	out	0x34, r20	; 52
+			break;
+ 28e:	08 95       	ret
+			
+			case 95:				//Barrier
+				VLMCSR = 3;
+ 290:	43 e0       	ldi	r20, 0x03	; 3
+ 292:	44 bf       	out	0x34, r20	; 52
+			break;
+ 294:	08 95       	ret
+			
+			case 99:				//Between barrier and hero
+				VLMCSR = 4;
+ 296:	44 e0       	ldi	r20, 0x04	; 4
+ 298:	44 bf       	out	0x34, r20	; 52
+			break;
+ 29a:	08 95       	ret
+			
+			case 110:				//Hero
+				VLMCSR = 5;
+ 29c:	45 e0       	ldi	r20, 0x05	; 5
+ 29e:	44 bf       	out	0x34, r20	; 52
+				if (!(PINB & 0b0100) && ICR0L == 255) {			//Fire missile (if one isn't already onscreen
+ 2a0:	02 99       	sbic	0x00, 2	; 0
+ 2a2:	35 c0       	rjmp	.+106    	; 0x30e <lineLogic+0x11c>
+ 2a4:	42 b5       	in	r20, 0x22	; 34
+ 2a6:	4f 3f       	cpi	r20, 0xFF	; 255
+ 2a8:	91 f5       	brne	.+100    	; 0x30e <lineLogic+0x11c>
+					ICR0H = playerX + 9;
+ 2aa:	47 a1       	lds	r20, 0x47	; 0x800047 <playerX>
+ 2ac:	47 5f       	subi	r20, 0xF7	; 247
+ 2ae:	43 bd       	out	0x23, r20	; 35
+					ICR0L = 106;
+ 2b0:	4a e6       	ldi	r20, 0x6A	; 106
+ 2b2:	42 bd       	out	0x22, r20	; 34
+ 2b4:	08 95       	ret
+				}
+			break;
+			
+			case 115:				//Ground
+				VLMCSR = 6;
+ 2b6:	46 e0       	ldi	r20, 0x06	; 6
+ 2b8:	44 bf       	out	0x34, r20	; 52
+				if (ICR0L < 255) {
+ 2ba:	42 b5       	in	r20, 0x22	; 34
+ 2bc:	4f 3f       	cpi	r20, 0xFF	; 255
+ 2be:	39 f1       	breq	.+78     	; 0x30e <lineLogic+0x11c>
+					ICR0L -= 2;
+ 2c0:	42 b5       	in	r20, 0x22	; 34
+ 2c2:	42 50       	subi	r20, 0x02	; 2
+ 2c4:	42 bd       	out	0x22, r20	; 34
+					if (ICR0L == 2) {
+ 2c6:	42 b5       	in	r20, 0x22	; 34
+ 2c8:	42 30       	cpi	r20, 0x02	; 2
+ 2ca:	09 f5       	brne	.+66     	; 0x30e <lineLogic+0x11c>
+						ICR0L = 255;
+ 2cc:	4f ef       	ldi	r20, 0xFF	; 255
+ 2ce:	42 bd       	out	0x22, r20	; 34
+ 2d0:	08 95       	ret
+					}
+				}
+			break;
+
+			case 125:
+				VLMCSR = 0;				//Done drawing things for this frame
+ 2d2:	14 bf       	out	0x34, r17	; 52
+				SMCR |= 0x02;			//VSYNC pulse on
+ 2d4:	4a b7       	in	r20, 0x3a	; 58
+ 2d6:	42 60       	ori	r20, 0x02	; 2
+ 2d8:	4a bf       	out	0x3a, r20	; 58
+				if (++NVMCMD == moveSpeed) {
+ 2da:	43 b7       	in	r20, 0x33	; 51
+ 2dc:	4f 5f       	subi	r20, 0xFF	; 255
+ 2de:	43 bf       	out	0x33, r20	; 51
+ 2e0:	52 a1       	lds	r21, 0x42	; 0x800042 <moveSpeed>
+ 2e2:	45 13       	cpse	r20, r21
+ 2e4:	14 c0       	rjmp	.+40     	; 0x30e <lineLogic+0x11c>
+					NVMCMD = 0;
+ 2e6:	13 bf       	out	0x33, r17	; 51
+					SMCR += 0x08;
+ 2e8:	4a b7       	in	r20, 0x3a	; 58
+ 2ea:	48 5f       	subi	r20, 0xF8	; 248
+ 2ec:	4a bf       	out	0x3a, r20	; 58
+ 2ee:	08 95       	ret
+				}
+			break;
+			
+			case 128:
+				SMCR &= ~0x02;			//VYNS pulse off
+ 2f0:	4a b7       	in	r20, 0x3a	; 58
+ 2f2:	4d 7f       	andi	r20, 0xFD	; 253
+ 2f4:	4a bf       	out	0x3a, r20	; 58
+				DIDR0 =  0b00001000;	//Reset this so ADC will work next go-round
+ 2f6:	48 e0       	ldi	r20, 0x08	; 8
+ 2f8:	47 bb       	out	0x17, r20	; 23
+			break;
+ 2fa:	08 95       	ret
+			
+			case 131:					//V back porch done, restart
+				lineCounter = 0;
+ 2fc:	19 a9       	sts	0x49, r17	; 0x800049 <lineCounter>
+				EICRA = 0;
+ 2fe:	15 bb       	out	0x15, r17	; 21
+				if (interlace) {
+ 300:	46 a1       	lds	r20, 0x46	; 0x800046 <__data_end>
+ 302:	44 23       	and	r20, r20
+ 304:	11 f0       	breq	.+4      	; 0x30a <lineLogic+0x118>
+					interlace = 0;
+ 306:	16 a9       	sts	0x46, r17	; 0x800046 <__data_end>
+ 308:	08 95       	ret
+				}
+				else {
+					interlace = 1;
+ 30a:	41 e0       	ldi	r20, 0x01	; 1
+ 30c:	46 a9       	sts	0x46, r20	; 0x800046 <__data_end>
+ 30e:	08 95       	ret
+
+00000310 <main>:
+	
+}
+
+int main(void) {
+	
+	CCP = 0xD8;						//Flag so we can write the protected register
+ 310:	48 ed       	ldi	r20, 0xD8	; 216
+ 312:	4c bf       	out	0x3c, r20	; 60
+	CLKPSR = 0b0000;				//Set NO CPU clock divider on protected register (8MHz)
+ 314:	16 bf       	out	0x36, r17	; 54
+
+	PUEB = 0b00000100;
+ 316:	44 e0       	ldi	r20, 0x04	; 4
+ 318:	43 b9       	out	0x03, r20	; 3
+
+	ADMUX = 3;
+ 31a:	43 e0       	ldi	r20, 0x03	; 3
+ 31c:	4b bb       	out	0x1b, r20	; 27
+	ADCSRA = 0b10000011;			//Enable ADC
+ 31e:	43 e8       	ldi	r20, 0x83	; 131
+ 320:	4d bb       	out	0x1d, r20	; 29
+
+	TCCR0B = 0b00001001;			// No clock divider, normal waveform
+ 322:	49 e0       	ldi	r20, 0x09	; 9
+ 324:	4d bd       	out	0x2d, r20	; 45
+	OCR0A = 495;
+ 326:	4f ee       	ldi	r20, 0xEF	; 239
+ 328:	51 e0       	ldi	r21, 0x01	; 1
+ 32a:	57 bd       	out	0x27, r21	; 39
+ 32c:	46 bd       	out	0x26, r20	; 38
+	TIMSK0 = 0x02;					//Use compare A
+ 32e:	42 e0       	ldi	r20, 0x02	; 2
+ 330:	4b bd       	out	0x2b, r20	; 43
+
+	boardStart();
+ 332:	8d de       	rcall	.-742    	; 0x4e <boardStart>
+
+	while (1) {
+		
+		TIFR0 = 0x07;					//Clear counter flags
+ 334:	47 e0       	ldi	r20, 0x07	; 7
+ 336:	4a bd       	out	0x2a, r20	; 42
+
+		while(!(TIFR0 & 0x02)) {		//Wait for the Counter A match flag to be set
+ 338:	0a b5       	in	r16, 0x2a	; 42
+ 33a:	01 ff       	sbrs	r16, 1
+ 33c:	fd cf       	rjmp	.-6      	; 0x338 <main+0x28>
+		}
+
+		if (SMCR & 0x02) {				//Vsync bit set?
+ 33e:	0a b7       	in	r16, 0x3a	; 58
+ 340:	01 ff       	sbrs	r16, 1
+ 342:	07 c0       	rjmp	.+14     	; 0x352 <main+0x42>
+			DDRB = 0;					//Output to hi z
+ 344:	11 b9       	out	0x01, r17	; 1
+			xPos(hSync);
+ 346:	85 e0       	ldi	r24, 0x05	; 5
+ 348:	8c de       	rcall	.-744    	; 0x62 <xPos>
+			PORTB = 0;					//Set as 1 so going to output will make pixels
+ 34a:	12 b9       	out	0x02, r17	; 2
+			DDRB = 1;
+ 34c:	41 e0       	ldi	r20, 0x01	; 1
+ 34e:	41 b9       	out	0x01, r20	; 1
+ 350:	07 c0       	rjmp	.+14     	; 0x360 <main+0x50>
+		}
+		else {							//Else normal line
+			PORTB = 0;					//Set to 0 for h pulse
+ 352:	12 b9       	out	0x02, r17	; 2
+			DDRB = 1;					//Output to pull signal low
+ 354:	c1 e0       	ldi	r28, 0x01	; 1
+ 356:	c1 b9       	out	0x01, r28	; 1
+			xPos(hSync);
+ 358:	85 e0       	ldi	r24, 0x05	; 5
+ 35a:	83 de       	rcall	.-762    	; 0x62 <xPos>
+			DDRB = 0;					//Go back to tri-state
+ 35c:	11 b9       	out	0x01, r17	; 1
+			PORTB = 1;					//Set as 1 so going to output will make pixels
+ 35e:	c2 b9       	out	0x02, r28	; 2
+			//Low pulse
+		}
+
+		if (EICRA & interlace) {
+ 360:	55 b3       	in	r21, 0x15	; 21
+ 362:	46 a1       	lds	r20, 0x46	; 0x800046 <__data_end>
+ 364:	45 23       	and	r20, r21
+ 366:	11 f0       	breq	.+4      	; 0x36c <main+0x5c>
+			drawPF();
+ 368:	92 de       	rcall	.-732    	; 0x8e <drawPF>
+ 36a:	01 c0       	rjmp	.+2      	; 0x36e <main+0x5e>
+		}
+		else {
+			drawMissiles();
+ 36c:	35 df       	rcall	.-406    	; 0x1d8 <drawMissiles>
+		}
+
+		lineLogic();
+ 36e:	41 df       	rcall	.-382    	; 0x1f2 <lineLogic>
+	}
+ 370:	e1 cf       	rjmp	.-62     	; 0x334 <main+0x24>
+
+00000372 <_exit>:
+ 372:	f8 94       	cli
+
+00000374 <__stop_program>:
+ 374:	ff cf       	rjmp	.-2      	; 0x374 <__stop_program>
