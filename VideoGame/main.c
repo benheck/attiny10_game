@@ -46,7 +46,7 @@ void heroMissileOff() {
 void xPos(uint8_t theSpacing) {
 
 	do {
-		__asm__ __volatile__ ("nop");	
+		asm volatile ("NOP":);
 	} while(--theSpacing);
 
 }
@@ -61,25 +61,25 @@ void gameOver() {
 
 void drawSprite(uint8_t theData) {
 
-	__asm__ __volatile__ ("OUT 0x01, R24");
-	__asm__ __volatile__ ("ROR R24");
-	__asm__ __volatile__ ("OUT 0x01, R24");
-	__asm__ __volatile__ ("ROR R24");
-	__asm__ __volatile__ ("OUT 0x01, R24");
-	__asm__ __volatile__ ("ROR R24");
-	__asm__ __volatile__ ("OUT 0x01, R24");
-	__asm__ __volatile__ ("nop");	
-	__asm__ __volatile__ ("OUT 0x01, R24");	//Draw 4th pixel again
-	
-	__asm__ __volatile__ ("ROL R24");		//Mirror universe the pixels
-	__asm__ __volatile__ ("OUT 0x01, R24");
-	__asm__ __volatile__ ("ROL R24");
-	__asm__ __volatile__ ("OUT 0x01, R24");
-	__asm__ __volatile__ ("ROL R24");
-	__asm__ __volatile__ ("OUT 0x01, R24");
-	
-	__asm__ __volatile__ ("LSL R24");		//End by outputting black
-	__asm__ __volatile__ ("OUT 0x01, R24");
+	asm volatile (
+		"OUT 0x01, %0\n" 
+		"ROR %0\n" 
+		"OUT 0x01, %0\n" 
+		"ROR %0\n" 
+		"OUT 0x01, %0\n" 
+		"ROR %0\n" 
+		"OUT 0x01, %0\n" 
+		"NOP\n" 
+		"OUT 0x01, %0\n"	/*Draw 4th pixel again*/
+		"ROL %0\n"			/*Mirror universe the pixels*/
+		"OUT 0x01, %0\n" 
+		"ROL %0\n" 
+		"OUT 0x01, %0\n" 
+		"ROL %0\n" 
+		"OUT 0x01, %0\n" 
+		"LSL %0\n"			/*End by outputting black*/
+		"OUT 0x01, %0" 
+	: "+r" (theData));
 
 }
 
@@ -90,15 +90,15 @@ void drawPF() {
 		case 2:						//Draw the bugs?
 			if (PCMSK < 8) {								//Active vertical sprite line?
 
-				uint8_t spriteLine = bugGraphx[PCMSK];		//Puts data in R24
+				uint8_t spriteLine = bugGraphx[PCMSK];
 
 				if (SMCR & 0x02) {
 					spriteLine >>= 4;
 				}
 				else {
-					__asm__ __volatile__ ("nop");			//Only need 3 NOPS since a true above eats a jump
-					__asm__ __volatile__ ("nop");
-					__asm__ __volatile__ ("nop");
+					asm volatile ("NOP\n"
+								  "NOP\n"
+								  "NOP":); //Only need three NOPs because branching over the shift eats a cycle
 				}
 				
 				xPos(bugH);
