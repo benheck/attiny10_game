@@ -327,8 +327,7 @@ void lineLogic() {
 			case 131:					//V back porch done, restart
 				lineCounter = 0;
 				EICRA = 0;
-				ADCSRB++;				//Increment the interlace toggle
-				ADCSRB &= 0x01;			//Mask off so we just have the LSB
+				ADCSRB ^= 0x01;				//Increment the interlace toggle
 			break;		
 		}		
 	}	
