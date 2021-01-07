@@ -1,0 +1,4 @@
+.vs/**
+*.componentinfo.xml
+VideoGame/Debug/**
+VideoGame/Release/**

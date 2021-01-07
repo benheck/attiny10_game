@@ -3,6 +3,7 @@
 #define hSync	5
 
 uint8_t lineCounter;
+register uint8_t lineMode asm ("r26");
 uint8_t startingV;
 uint8_t bugV;
 uint8_t bugNext;
@@ -46,7 +47,7 @@ void heroMissileOff() {
 void xPos(uint8_t theSpacing) {
 
 	do {
-		__asm__ __volatile__ ("nop");	
+		asm volatile ("NOP":);
 	} while(--theSpacing);
 
 }
@@ -61,44 +62,44 @@ void gameOver() {
 
 void drawSprite(uint8_t theData) {
 
-	__asm__ __volatile__ ("OUT 0x01, R24");
-	__asm__ __volatile__ ("ROR R24");
-	__asm__ __volatile__ ("OUT 0x01, R24");
-	__asm__ __volatile__ ("ROR R24");
-	__asm__ __volatile__ ("OUT 0x01, R24");
-	__asm__ __volatile__ ("ROR R24");
-	__asm__ __volatile__ ("OUT 0x01, R24");
-	__asm__ __volatile__ ("nop");	
-	__asm__ __volatile__ ("OUT 0x01, R24");	//Draw 4th pixel again
-	
-	__asm__ __volatile__ ("ROL R24");		//Mirror universe the pixels
-	__asm__ __volatile__ ("OUT 0x01, R24");
-	__asm__ __volatile__ ("ROL R24");
-	__asm__ __volatile__ ("OUT 0x01, R24");
-	__asm__ __volatile__ ("ROL R24");
-	__asm__ __volatile__ ("OUT 0x01, R24");
-	
-	__asm__ __volatile__ ("LSL R24");		//End by outputting black
-	__asm__ __volatile__ ("OUT 0x01, R24");
+	asm volatile (
+		"OUT 0x01, %0\n" 
+		"ROR %0\n" 
+		"OUT 0x01, %0\n" 
+		"ROR %0\n" 
+		"OUT 0x01, %0\n" 
+		"ROR %0\n" 
+		"OUT 0x01, %0\n" 
+		"NOP\n" 
+		"OUT 0x01, %0\n"	/*Draw 4th pixel again*/
+		"ROL %0\n"			/*Mirror universe the pixels*/
+		"OUT 0x01, %0\n" 
+		"ROL %0\n" 
+		"OUT 0x01, %0\n" 
+		"ROL %0\n" 
+		"OUT 0x01, %0\n" 
+		"LSL %0\n"			/*End by outputting black*/
+		"OUT 0x01, %0" 
+	: "+r" (theData));
 
 }
 
 void drawPF() {
 
-	switch(VLMCSR) {
+	switch(lineMode) {
 		
-		case 2:						//Draw the bugs?
+		case 1:						//Draw the bugs?
 			if (PCMSK < 8) {								//Active vertical sprite line?
 
-				uint8_t spriteLine = bugGraphx[PCMSK];		//Puts data in R24
+				uint8_t spriteLine = bugGraphx[PCMSK];
 
 				if (SMCR & 0x02) {
 					spriteLine >>= 4;
 				}
 				else {
-					__asm__ __volatile__ ("nop");			//Only need 3 NOPS since a true above eats a jump
-					__asm__ __volatile__ ("nop");
-					__asm__ __volatile__ ("nop");
+					asm volatile ("NOP\n"
+								  "NOP\n"
+								  "NOP":); //Only need three NOPs because branching over the shift eats a cycle
 				}
 				
 				xPos(bugH);
@@ -132,11 +133,11 @@ void drawPF() {
 
 		break;
 			
-		case 3:						//Draw the SUPER SPACE SHIELD?
+		case 2:						//Draw the SUPER SPACE SHIELD?
 			DDRB = 0b0001;							
 		break;
 			
-		case 5:						//Draw the player
+		case 3:						//Draw the player
 			xPos(playerX);
 			
 			if (gameState & 1) {			
@@ -147,7 +148,7 @@ void drawPF() {
 
 		break;
 			
-		case 6:				//Ground
+		case 4:				//Ground
 			DDRB = 0b0011;
 			PORTB |= SMCR;
 			
@@ -199,7 +200,7 @@ void lineLogic() {
 	
 	if (++EICRA & 0x01) {
 
-		if (lineCounter == bugNext && VLMCSR == 2) {				//Time to draw a line of bugs?
+		if (lineCounter == bugNext && lineMode == 1) {				//Time to draw a line of bugs?
 			PCMSK = 0;								//Trigger the sprite draw
 			bugMask >>= 1;							//Shift to next row of bugs
 			if (--DIDR0) {							//If we didn't draw all rows yet, set up next row
@@ -221,11 +222,11 @@ void lineLogic() {
 			
 			case 2:	
 				DIDR0 = 6;						//We want 5 lines of aliens
-				VLMCSR = 2;							
+				lineMode = 1;							
 			break;
 			
 			case 103:							//Barrier
-				VLMCSR = 3;	
+				lineMode = 2;	
 				
 				if (missileCheck) {				//Check for missile-bug collisions
 					uint8_t beamH = bugH + 8;
@@ -255,7 +256,7 @@ void lineLogic() {
 			break;
 			
 			case 104:				//Between barrier and hero
-				VLMCSR = 4;
+				lineMode = 0;
 				if (splashed == 30) {	//Got 'em all? Move them closer and new wave
 					startingV += 4;
 					boardStart();
@@ -263,7 +264,7 @@ void lineLogic() {
 			break;
 			
 			case 110:				//Hero
-				VLMCSR = 5;
+				lineMode = 3;
 				playerX = ADCL >> 1;
 				playerX += 6;
 				
@@ -289,14 +290,14 @@ void lineLogic() {
 			break;
 			
 			case 115:				//Ground
-				VLMCSR = 6;
+				lineMode = 4;
 				if (missileV) {					//Missile active? Move it
 					missileV -= 2;				
 				}
 			break;
 						
 			case 125:
-				VLMCSR = 0;				//Done drawing things for this frame
+				lineMode = 0;				//Done drawing things for this frame
 				SMCR |= 0x08;			//VSYNC pulse on
 				if (++NVMCMD > moveSpeed) {
 					NVMCMD = 0;
@@ -327,8 +328,7 @@ void lineLogic() {
 			case 131:					//V back porch done, restart
 				lineCounter = 0;
 				EICRA = 0;
-				ADCSRB++;				//Increment the interlace toggle
-				ADCSRB &= 0x01;			//Mask off so we just have the LSB
+				ADCSRB ^= 0x01;				//Increment the interlace toggle
 			break;		
 		}		
 	}	
