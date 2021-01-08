@@ -2,8 +2,6 @@
 #include <avr/io.h>
 #define hSync	5
 
-register uint8_t ZERO asm("r17");
-
 uint8_t lineCounter;
 register uint8_t lineMode asm ("r26");
 uint8_t startingV;
