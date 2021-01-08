@@ -52,7 +52,7 @@ void xPos(uint8_t theSpacing) {
 
 }
 
-void gameOver() {
+static void gameOver() {
 
 	gameState = 2;
 	moveSpeed = 10;			//Taunt player
@@ -84,7 +84,7 @@ void drawSprite(uint8_t theData) {
 
 }
 
-void drawPF() {
+static void drawPF() {
 
 	switch(lineMode) {
 		
