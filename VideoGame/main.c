@@ -2,6 +2,8 @@
 #include <avr/io.h>
 #define hSync	5
 
+register uint8_t ZERO asm("r17");
+
 uint8_t lineCounter;
 register uint8_t lineMode asm ("r26");
 uint8_t startingV;
@@ -37,6 +39,23 @@ const uint8_t bugGraphx[] = {
 };
 
 uint8_t bugs[6];
+
+/*
+ * this code completely replaces the interrupt vector table, since it's unused
+ */
+__attribute__((naked,section(".vectors"))) void start(void) {
+	asm volatile("clr __zero_reg__");		// set up r17 (constant 0)
+	SREG = 0;								// ensure status register is clear
+	SP = RAMEND;							// set up stack pointer
+}
+
+/*
+ * instead of an "rcall" to main, use an "rjmp".
+ * the standard exit() function is omitted
+ */
+__attribute__((naked,section(".init9"))) void __init_done(void) {
+	asm volatile("rjmp main");
+}
 
 void heroMissileOff() {
 
