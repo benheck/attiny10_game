@@ -38,6 +38,23 @@ const uint8_t bugGraphx[] = {
 
 uint8_t bugs[6];
 
+/*
+ * this code completely replaces the interrupt vector table, since it's unused
+ */
+__attribute__((naked,section(".vectors"))) void start(void) {
+	asm volatile("clr __zero_reg__");		// set up r17 (constant 0)
+	SREG = 0;								// ensure status register is clear
+	SP = RAMEND;							// set up stack pointer
+}
+
+/*
+ * instead of an "rcall" to main, use an "rjmp".
+ * the standard exit() function is omitted
+ */
+__attribute__((naked,section(".init9"))) void __init_done(void) {
+	asm volatile("rjmp main");
+}
+
 void heroMissileOff() {
 
 	missileV = 0;
@@ -52,7 +69,7 @@ void xPos(uint8_t theSpacing) {
 
 }
 
-void gameOver() {
+static void gameOver() {
 
 	gameState = 2;
 	moveSpeed = 10;			//Taunt player
@@ -84,7 +101,7 @@ void drawSprite(uint8_t theData) {
 
 }
 
-void drawPF() {
+static void drawPF() {
 
 	switch(lineMode) {
 		
